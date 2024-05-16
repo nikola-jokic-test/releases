@@ -51,26 +51,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: actions-runner
-            os-name: ubuntu
-            os-version: 20.04
-            latest: "true"
-          - name: actions-runner
-            os-name: ubuntu
-            os-version: 22.04
-            latest: "false"
-          - name: actions-runner-dind
-            os-name: ubuntu
-            os-version: 20.04
-            latest: "true"
-          - name: actions-runner-dind
-            os-name: ubuntu
-            os-version: 22.04
-            latest: "false"
-          - name: actions-runner-dind-rootless
-            os-name: ubuntu
-            os-version: 20.04
-            latest: "true"
           - name: actions-runner-dind-rootless
             os-name: ubuntu
             os-version: 22.04
@@ -124,3 +104,6 @@ jobs:
             ${{ matrix.latest == 'true' && env.LATEST_TAG_GHCR || '' }}
           cache-from: type=registry,ref=ghcr.io/${{ env.TARGET_ORG }}/${{ env.TARGET_REPO }}/${{ matrix.name }}:v${{ inputs.runner_version }}-${{ matrix.os-name }}-${{ matrix.os-version }}
           cache-to: type=inline
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
